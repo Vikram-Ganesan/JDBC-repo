@@ -1,0 +1,179 @@
+package com;
+
+import java.sql.*;
+import java.util.*;
+
+public class MainDriver {
+	static Scanner scan = new Scanner(System.in);
+
+	public static void main(String[] args) {
+
+		boolean exit = true;
+		do {
+			System.out.println("\t\t\tWelcome to DataBase");
+			System.out.println("Select options from below");
+			System.out.println("1.Add Customer");
+			System.out.println("2.Delete Customer");
+			System.out.println("3.Update Customer");
+			System.out.println("4.All Customer Details");
+			System.out.println("5.Customer Details by ID");
+
+			System.out.println("6.Exit");
+
+			int option = scan.nextInt();
+			MethodsOfDB callStatement = new MethodsOfDB();
+			switch (option) {
+			case 1: {
+
+				try {
+					System.out.println("\t\t\tWelcome to Customer Data Page...!");
+					System.out.println("Enter id number");
+					int id = scan.nextInt();
+					scan.nextLine();
+					System.out.println("Enter Duck Name");
+					String duck = scan.nextLine();
+					System.out.println("Enter Buyer Name");
+					String buyer = scan.nextLine();
+					System.out.println("Enter Buyer Contact number");
+					long contact = scan.nextLong();
+					CustomerDetails detailsOfCustomer = new CustomerDetails();
+					detailsOfCustomer.setId(id);
+					detailsOfCustomer.setDuck(duck);
+					detailsOfCustomer.setBuyer(buyer);
+					detailsOfCustomer.setContact(contact);
+					callStatement.addCustomerDetails(detailsOfCustomer);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+
+			}
+			case 2: {
+
+				try {
+					System.out.println("\t\t\tWelcome to Customer Delete Page...!");
+					System.out.println("Enter id number to delete");
+					int id = scan.nextInt();
+
+					CustomerDetails detailsOfCustomer = new CustomerDetails();
+					detailsOfCustomer.setId(id);
+					CustomerDetails fetch = callStatement.fetchByID(id);
+					callStatement.deleteCustomerByID(fetch);
+				} catch (SQLException e) {
+
+					e.printStackTrace();
+					System.out.println(e);
+				}
+				break;
+
+			}
+			case 3: {
+				boolean updateExit = true;
+				do {
+					System.out.println("\t\t\tWelcome to Customer Update Page");
+					System.out.println("Enter Customer ID to update");
+					int id = scan.nextInt();
+					CustomerDetails detailsOfCustomer = callStatement.fetchByID(id);
+					if (detailsOfCustomer != null) {
+						System.out.println("\t\t\tWelcome to Customer Update Page");
+						System.out.println("1.Update Duck Name");
+						System.out.println("2.Update Buyer Name");
+						System.out.println("3.Update Buyer Contact");
+						System.out.println("4.Exit Update Page");
+						int userOption = scan.nextInt();
+						scan.nextLine();
+						switch (userOption) {
+						case 1: {
+							System.out.println("Enter Duck Name");
+							String duck = scan.nextLine();
+							try {
+								detailsOfCustomer.setDuck(duck);
+								callStatement.UpdateCustomerDetails(detailsOfCustomer);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+						case 2: {
+							System.out.println("Enter Buyer Name");
+							String buyer = scan.nextLine();
+							try {
+								detailsOfCustomer.setBuyer(buyer);
+								callStatement.UpdateCustomerDetails(detailsOfCustomer);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+						case 3: {
+							System.out.println("Enter Buyer Contact");
+							long contact = scan.nextLong();
+							try {
+								detailsOfCustomer.setContact(contact);
+								callStatement.UpdateCustomerDetails(detailsOfCustomer);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							break;
+						}
+						case 4:{
+							updateExit = false;
+							break;
+						}
+						default:
+							System.out.println("Unexpected value: " + userOption);
+							break;
+						}
+
+					}
+				} while (updateExit);
+				break;
+
+			}
+			case 4: {
+				try {
+					List<CustomerDetails> customerCollection = callStatement.fetchAll();
+					for (CustomerDetails customerDetails : customerCollection) {
+						System.out.println(customerDetails);
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				break;
+
+			}
+			case 5: {
+				System.out.println("\t\t\tWelcome to Customer detail Page...!");
+				System.out.println("Enter id number to fetch");
+				int id = scan.nextInt();
+				CustomerDetails detailsOfCustomer = new CustomerDetails();
+				detailsOfCustomer.setId(id);
+				CustomerDetails details = callStatement.fetchByID(id);
+				System.out.println(details);
+
+				break;
+			}
+			case 6: {
+				exit = false;
+				System.out.println("***Thanks for Using Database***");
+				break;
+
+			}
+			default:
+				System.out.println("Unexpected value: " + option);
+
+				System.out.println("***Thanks for Using Database***");
+				break;
+			}
+
+		} while (exit);
+
+	}
+
+}
