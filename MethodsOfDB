@@ -1,0 +1,107 @@
+package com;
+
+import java.sql.*;
+import java.util.*;
+
+public class MethodsOfDB {
+	public Connection getConnection() {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/duck", "root", "Alone@123");
+			return connect;
+
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("Connection Failed");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void addCustomerDetails(CustomerDetails detailsOfCustomer) throws SQLException {
+		Connection connect = getConnection();
+
+		PreparedStatement statement = connect.prepareStatement("insert into duck_details values (?,?,?,?)");
+		statement.setInt(1, detailsOfCustomer.getId());
+		statement.setString(2, detailsOfCustomer.getDuck());
+		statement.setString(3, detailsOfCustomer.getBuyer());
+		statement.setLong(4, detailsOfCustomer.getContact());
+		statement.executeUpdate();
+
+	}
+
+	public CustomerDetails fetchByID(int id) {
+		Connection connect = getConnection();
+		try {
+			PreparedStatement statement = connect.prepareStatement("select * from duck_details where id =?");
+			CustomerDetails finalCustomer = new CustomerDetails();
+			statement.setInt(1, id);
+//			statement.setInt(1, finalCustomer.getId());
+			ResultSet finalResult = statement.executeQuery();
+
+			if (finalResult.next()) {
+				int id1 = finalResult.getInt(1);
+				String duck = finalResult.getString(2);
+				String buyer = finalResult.getString(3);
+				long contact = finalResult.getLong(4);
+				finalCustomer.setId(id1);
+				finalCustomer.setBuyer(buyer);
+				finalCustomer.setDuck(duck);
+				finalCustomer.setContact(contact);
+
+				return finalCustomer;
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<CustomerDetails> fetchAll() throws SQLException {
+
+		ArrayList<CustomerDetails> listCustomer = new ArrayList<CustomerDetails>();
+		Connection connect = getConnection();
+		Statement listcreate = connect.createStatement();
+		ResultSet finalResult = listcreate.executeQuery("Select * from duck_details");
+
+		while (finalResult.next()) {
+			CustomerDetails finalList = new CustomerDetails();
+			int id = finalResult.getInt(1);
+			String duck = finalResult.getString(2);
+			String buyer = finalResult.getString(3);
+			long contact = finalResult.getLong(4);
+			finalList.setBuyer(buyer);
+			finalList.setId(id);
+			finalList.setDuck(duck);
+			finalList.setContact(contact);
+			listCustomer.add(finalList);
+		}
+
+		return listCustomer;
+	}
+
+	public void deleteCustomerByID(CustomerDetails detailsOfCustomer) throws SQLException {
+		Connection connect = getConnection();
+		PreparedStatement statement = connect.prepareStatement("delete from duck_details where id =?");
+		statement.setInt(1, detailsOfCustomer.getId());
+		System.out.println("Customer " + detailsOfCustomer.getBuyer() + " Deleted");
+
+		statement.executeUpdate();
+
+	}
+
+	public void UpdateCustomerDetails(CustomerDetails detailsOfCustomer) throws SQLException {
+		Connection connect = getConnection();
+		PreparedStatement statement = connect
+				.prepareStatement("update duck_details set duck=?, buyer=?, contact=? where id =?");
+		statement.setString(1, detailsOfCustomer.getDuck());
+		statement.setString(2, detailsOfCustomer.getBuyer());
+		statement.setLong(3, detailsOfCustomer.getContact());
+		statement.setInt(4, detailsOfCustomer.getId());
+		statement.executeUpdate();
+		System.out.println("Data updated");
+
+	}
+}
