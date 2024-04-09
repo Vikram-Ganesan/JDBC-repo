@@ -1,0 +1,40 @@
+package com;
+
+public class CustomerDetails {
+	
+	private int id;
+	private String duck;
+	private String buyer;
+	private long contact;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getDuck() {
+		return duck;
+	}
+	public void setDuck(String duck) {
+		this.duck = duck;
+	}
+	public String getBuyer() {
+		return buyer;
+	}
+	public void setBuyer(String buyer) {
+		this.buyer = buyer;
+	}
+	public long getContact() {
+		return contact;
+	}
+	public void setContact(long contact) {
+		this.contact = contact;
+	}
+	@Override
+	public String toString() {
+		return "CustomerDetails [id=" + id + ", duck=" + duck + ", buyer=" + buyer + ", contact=" + contact + "]";
+	}
+
+	
+	
+}
